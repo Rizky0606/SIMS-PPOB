@@ -7,14 +7,16 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {priceTopup} from '../data/priceTopup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {API} from '../libs/api';
-import {formatCurrency} from '../utils/currencyFormatter';
 import {ActivityIndicator} from 'react-native-paper';
 import Toast from 'react-native-toast-message';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const TopUp = () => {
+import {priceTopup} from '../data/priceTopup';
+import {API} from '../libs/api';
+import {formatCurrency} from '../utils/currencyFormatter';
+
+const TopUp = ({navigation}: any) => {
   const [saldo, setSaldo] = useState<number>(0);
   const [inputTopup, setInputTopup] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -51,10 +53,12 @@ const TopUp = () => {
           },
         },
       );
+      setInputTopup(0);
       Toast.show({
         type: 'success',
         text1: 'Topup Berhasil',
       });
+      setIsLoadingButton(false);
     } catch (error) {
       console.log(error);
       setIsLoading(false);
@@ -80,9 +84,16 @@ const TopUp = () => {
         <View style={styles.container}>
           <Toast />
           <View style={styles.header}>
-            <View>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
+              }}>
+              <MaterialIcons name="arrow-back" size={25} color="black" />
               <Text style={{color: 'black', fontSize: 15}}>Kembali</Text>
-            </View>
+            </TouchableOpacity>
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <Text style={{textAlign: 'center', color: 'black', fontSize: 20}}>
                 Top Up

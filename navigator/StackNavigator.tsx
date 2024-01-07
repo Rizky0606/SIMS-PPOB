@@ -4,6 +4,7 @@ import CheckingUser from '../screens/CheckingUser';
 import TabNavigator from './TabNavigator';
 import Login from '../screens/Login';
 import Register from '../screens/Register';
+import PaymentService from '../screens/PaymentService';
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -27,6 +28,11 @@ const StackNavigator = () => {
       <Stack.Screen
         name="RegisterScreen"
         component={Register}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Service"
+        component={PaymentService}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

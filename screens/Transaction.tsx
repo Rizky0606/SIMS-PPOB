@@ -1,11 +1,13 @@
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {API} from '../libs/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {ActivityIndicator} from 'react-native-paper';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
+import {API} from '../libs/api';
 import {formatCurrency} from '../utils/currencyFormatter';
 import dateFormatter from '../utils/dateFormatter';
 import timeFormatter from '../utils/timeFormatter';
-import {ActivityIndicator} from 'react-native-paper';
 
 type TypeTransactionProps = {
   created_on: string;
@@ -15,7 +17,7 @@ type TypeTransactionProps = {
   transaction_type: string;
 };
 
-const Transaction = () => {
+const Transaction = ({navigation}: any) => {
   const [dataTransaction, setDataTransaction] = useState<
     TypeTransactionProps[]
   >([]);
@@ -69,9 +71,16 @@ const Transaction = () => {
       ) : (
         <View style={styles.container}>
           <View style={styles.header}>
-            <View>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
+              }}>
+              <MaterialIcons name="arrow-back" size={25} color="black" />
               <Text style={{color: 'black', fontSize: 15}}>Kembali</Text>
-            </View>
+            </TouchableOpacity>
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <Text style={{textAlign: 'center', color: 'black', fontSize: 20}}>
                 Transaksi

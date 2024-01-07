@@ -11,11 +11,13 @@ import {useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import {ActivityIndicator} from 'react-native-paper';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import {API} from '../libs/api';
 
 const Account = ({navigation}: any) => {
   const dataUser = useSelector(state => state.user.user);
+
   const [editable, setEditable] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [updateDataUser, setUpdateDataUser] = useState({
@@ -56,13 +58,22 @@ const Account = ({navigation}: any) => {
     }
   };
 
+  console.log(dataUser.profile_image);
+
   return (
     <View style={styles.container}>
       <Toast />
       <View style={styles.header}>
-        <View style={{justifyContent: 'flex-start'}}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'row',
+          }}>
+          <MaterialIcons name="arrow-back" size={25} color="black" />
           <Text style={{color: 'black', fontSize: 15}}>Kembali</Text>
-        </View>
+        </TouchableOpacity>
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Text
             style={{
@@ -78,8 +89,16 @@ const Account = ({navigation}: any) => {
       <View style={{marginTop: 40}}>
         <TouchableOpacity style={{alignItems: 'center'}}>
           <Image
-            source={{uri: dataUser.profile_image}}
-            style={{width: 100, height: 100, borderRadius: 100 / 2}}
+            source={{
+              uri: dataUser.profile_image,
+            }}
+            style={{
+              width: 100,
+              height: 100,
+              borderRadius: 50,
+              borderWidth: 1,
+              borderColor: 'black',
+            }}
           />
         </TouchableOpacity>
         <Text

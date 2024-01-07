@@ -57,6 +57,7 @@ const Login = ({navigation}: any) => {
       <View style={{width: '100%', alignItems: 'center'}}>
         <TextInput
           keyboardType="email-address"
+          inputMode="email"
           style={styles.boxInput}
           placeholder="Masukan email anda"
           placeholderTextColor="black"
@@ -64,6 +65,7 @@ const Login = ({navigation}: any) => {
         />
         <TextInput
           autoCapitalize="none"
+          autoCorrect={false}
           keyboardType="visible-password"
           style={styles.boxInput}
           placeholder="Masukan password anda"

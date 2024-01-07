@@ -201,7 +201,8 @@ const Home = ({navigation}: any) => {
                   marginTop: 30,
                   width: 50,
                   height: 50,
-                }}>
+                }}
+                onPress={() => navigation.navigate('Service', {item})}>
                 <Image
                   source={{uri: item.service_icon}}
                   style={{width: 50, height: 50}}
