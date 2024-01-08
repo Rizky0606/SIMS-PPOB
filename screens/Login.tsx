@@ -15,13 +15,9 @@ import {API} from '../libs/api';
 
 const Login = ({navigation}: any) => {
   const [isLoading, setIsLoading] = useState(false);
-  // const [dataLogin, setDataLogin] = useState({
-  //   email: '',
-  //   password: '',
-  // });
   const [dataLogin, setDataLogin] = useState({
-    email: 'user@nutech-integrasi.com',
-    password: 'abcdef1234',
+    email: '',
+    password: '',
   });
 
   const handleLogin = async () => {

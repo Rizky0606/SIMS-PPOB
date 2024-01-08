@@ -109,14 +109,12 @@ const Account = ({navigation}: any) => {
     }
   };
 
-  console.log(dataUser.profile_image);
-
   return (
     <View style={styles.container}>
       <Toast />
       <View style={styles.header}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.replace('HomeScreen')}
           style={{
             alignItems: 'center',
             justifyContent: 'center',

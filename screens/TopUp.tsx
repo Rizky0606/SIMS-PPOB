@@ -35,6 +35,8 @@ const TopUp = ({navigation}: any) => {
       setIsLoading(false);
     } catch (error) {
       console.log(error);
+      navigation.replace('LoginScreen');
+      await AsyncStorage.clear();
       setIsLoading(false);
     }
   };
@@ -64,7 +66,7 @@ const TopUp = ({navigation}: any) => {
       console.log(error);
       setIsLoading(false);
       Toast.show({
-        type: 'success',
+        type: 'error',
         text1: 'Topup Gagal',
         text2: 'Silahkan periksa kembali inputan Anda',
       });
@@ -86,7 +88,7 @@ const TopUp = ({navigation}: any) => {
           <Toast />
           <View style={styles.header}>
             <TouchableOpacity
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.replace('HomeScreen')}
               style={{
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -95,7 +97,12 @@ const TopUp = ({navigation}: any) => {
               <MaterialIcons name="arrow-back" size={25} color="black" />
               <Text style={{color: 'black', fontSize: 15}}>Kembali</Text>
             </TouchableOpacity>
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginLeft: 80,
+              }}>
               <Text style={{textAlign: 'center', color: 'black', fontSize: 20}}>
                 Top Up
               </Text>

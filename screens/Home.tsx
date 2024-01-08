@@ -54,6 +54,8 @@ const Home = ({navigation}: any) => {
       setSaldo(response.data.data.balance);
     } catch (error) {
       console.log(error);
+      navigation.replace('LoginScreen');
+      await AsyncStorage.clear();
       setIsLoading(false);
     }
   };
@@ -71,6 +73,8 @@ const Home = ({navigation}: any) => {
       setIsLoading(false);
     } catch (error) {
       console.log(error);
+      navigation.replace('LoginScreen');
+      await AsyncStorage.clear();
       setIsLoading(false);
     }
   };
@@ -88,6 +92,8 @@ const Home = ({navigation}: any) => {
       setIsLoading(false);
     } catch (error) {
       console.log(error);
+      navigation.replace('LoginScreen');
+      await AsyncStorage.clear();
       setIsLoading(false);
     }
   };

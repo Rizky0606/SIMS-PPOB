@@ -1,4 +1,11 @@
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ActivityIndicator} from 'react-native-paper';
@@ -18,11 +25,17 @@ type TypeTransactionProps = {
 };
 
 const Transaction = ({navigation}: any) => {
+  const [offset, setOffset] = useState<number>(0);
   const [dataTransaction, setDataTransaction] = useState<
+    TypeTransactionProps[]
+  >([]);
+  const [moreTransaction, setMoreTransaction] = useState<
     TypeTransactionProps[]
   >([]);
   const [saldo, setSaldo] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const transaction = dataTransaction.concat(moreTransaction);
 
   const handleGetSaldo = async () => {
     try {
@@ -37,6 +50,7 @@ const Transaction = ({navigation}: any) => {
       setIsLoading(false);
     } catch (error) {
       console.log(error);
+      navigation.replace('LoginScreen');
       setIsLoading(false);
     }
   };
@@ -44,7 +58,7 @@ const Transaction = ({navigation}: any) => {
   const handleGetTransaction = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
-      const response = await API.get('/transaction/history', {
+      const response = await API.get(`/transaction/history?offset=0&limit=5`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -54,6 +68,30 @@ const Transaction = ({navigation}: any) => {
       setIsLoading(false);
     } catch (error) {
       console.log(error);
+      navigation.replace('LoginScreen');
+      await AsyncStorage.clear();
+      setIsLoading(false);
+    }
+  };
+
+  const handleShowMoreTransactions = async () => {
+    setOffset(offset + 5);
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await API.get(
+        `/transaction/history?offset=${offset}&limit=5`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      setMoreTransaction(response.data.data.records);
+      transaction.push(response.data.data.records);
+    } catch (error) {
+      console.log(error);
+      navigation.replace('LoginScreen');
+      await AsyncStorage.clear();
       setIsLoading(false);
     }
   };
@@ -72,7 +110,7 @@ const Transaction = ({navigation}: any) => {
         <View style={styles.container}>
           <View style={styles.header}>
             <TouchableOpacity
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.replace('HomeScreen')}
               style={{
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -109,99 +147,106 @@ const Transaction = ({navigation}: any) => {
             </View>
           </View>
 
-          <View style={{paddingTop: 20, paddingBottom: 10}}>
-            <Text style={{color: 'black', fontSize: 20, fontWeight: 'bold'}}>
-              Transaksi
-            </Text>
-          </View>
-
-          <View>
-            {dataTransaction.slice(0, 4).map((item, index) => (
-              <View
-                key={index}
-                style={{
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                  gap: 10,
-                  width: '100%',
-                  marginTop: 20,
-                  borderWidth: 1,
-                  borderColor: 'black',
-                  borderRadius: 5,
-                  padding: 20,
-                }}>
-                <View
-                  style={{
-                    width: '100%',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  {item.transaction_type === 'TOPUP' ? (
-                    <Text
-                      style={{
-                        color: 'green',
-                        fontSize: 20,
-                        fontWeight: 'bold',
-                      }}>
-                      + {formatCurrency(item.total_amount)}
-                    </Text>
-                  ) : (
-                    <Text
-                      style={{color: 'red', fontSize: 20, fontWeight: 'bold'}}>
-                      - {formatCurrency(item.total_amount)}
-                    </Text>
-                  )}
-                  <Text style={{color: 'black'}}>{item.description}</Text>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                  <Text style={{color: 'black'}}>
-                    {dateFormatter(new Date(item.created_on))}
-                  </Text>
-                  <Text style={{color: 'black', marginLeft: 10}}>
-                    {timeFormatter(new Date(item.created_on))}
-                  </Text>
-                </View>
-              </View>
-            ))}
-          </View>
-
-          {dataTransaction.length < 1 && (
-            <View
-              style={{
-                width: '100%',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: 30,
-              }}>
-              <Text style={{textAlign: 'center', color: 'gray'}}>
-                Tidak ada transaksi
+          <ScrollView>
+            <View style={{paddingTop: 20, paddingBottom: 10}}>
+              <Text style={{color: 'black', fontSize: 20, fontWeight: 'bold'}}>
+                Transaksi
               </Text>
             </View>
-          )}
 
-          {dataTransaction.length > 4 && (
             <View>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: 'transparent',
-                  padding: 15,
-                  borderRadius: 3,
-                  width: '100%',
-                  alignItems: 'center',
-                  marginTop: 10,
-                }}>
-                <Text
+              {transaction.map((item, index) => (
+                <View
+                  key={index}
                   style={{
-                    color: 'red',
-                    fontSize: 15,
-                    textAlign: 'center',
-                    fontWeight: 'bold',
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    gap: 10,
+                    width: '100%',
+                    marginTop: 20,
+                    borderWidth: 1,
+                    borderColor: 'black',
+                    borderRadius: 5,
+                    padding: 20,
                   }}>
-                  Show More
-                </Text>
-              </TouchableOpacity>
+                  <View
+                    style={{
+                      width: '100%',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}>
+                    {item.transaction_type === 'TOPUP' ? (
+                      <Text
+                        style={{
+                          color: 'green',
+                          fontSize: 20,
+                          fontWeight: 'bold',
+                        }}>
+                        + {formatCurrency(item.total_amount)}
+                      </Text>
+                    ) : (
+                      <Text
+                        style={{
+                          color: 'red',
+                          fontSize: 20,
+                          fontWeight: 'bold',
+                        }}>
+                        - {formatCurrency(item.total_amount)}
+                      </Text>
+                    )}
+                    <Text style={{color: 'black'}}>{item.description}</Text>
+                  </View>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={{color: 'black'}}>
+                      {dateFormatter(new Date(item.created_on))}
+                    </Text>
+                    <Text style={{color: 'black', marginLeft: 10}}>
+                      {timeFormatter(new Date(item.created_on))}
+                    </Text>
+                  </View>
+                </View>
+              ))}
             </View>
-          )}
+
+            {dataTransaction.length < 1 && (
+              <View
+                style={{
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginTop: 30,
+                }}>
+                <Text style={{textAlign: 'center', color: 'gray'}}>
+                  Tidak ada transaksi
+                </Text>
+              </View>
+            )}
+
+            {dataTransaction.length > 4 && (
+              <View>
+                <TouchableOpacity
+                  onPress={handleShowMoreTransactions}
+                  style={{
+                    backgroundColor: 'transparent',
+                    padding: 15,
+                    borderRadius: 3,
+                    width: '100%',
+                    alignItems: 'center',
+                    marginTop: 10,
+                  }}>
+                  <Text
+                    style={{
+                      color: 'red',
+                      fontSize: 15,
+                      textAlign: 'center',
+                      fontWeight: 'bold',
+                    }}>
+                    Show More
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </ScrollView>
         </View>
       )}
     </>

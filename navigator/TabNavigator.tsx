@@ -15,7 +15,7 @@ const TabNavigator = () => {
       inactiveColor="gray"
       barStyle={{backgroundColor: 'white'}}>
       <Tab.Screen
-        name="HomeTab"
+        name="Home"
         component={Home}
         options={{
           tabBarIcon: ({color}) => (
