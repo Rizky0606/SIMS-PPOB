@@ -60,6 +60,7 @@ const Login = ({navigation}: any) => {
 
       <View style={{width: '100%', alignItems: 'center'}}>
         <TextInput
+          autoCapitalize="none"
           keyboardType="email-address"
           inputMode="email"
           style={styles.boxInput}

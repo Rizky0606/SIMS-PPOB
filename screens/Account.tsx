@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import {ActivityIndicator} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 import {API} from '../libs/api';
 
@@ -20,6 +21,7 @@ const Account = ({navigation}: any) => {
 
   const [editable, setEditable] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [photoProfile, setPhotoProfile] = useState(dataUser.profile_image);
   const [updateDataUser, setUpdateDataUser] = useState({
     first_name: dataUser.first_name,
     last_name: dataUser.last_name,
@@ -32,6 +34,55 @@ const Account = ({navigation}: any) => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleChangePhotoProfile = () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        quality: 0.5,
+        maxHeight: 200,
+        maxWidth: 200,
+        selectionLimit: 1,
+      },
+      async response => {
+        if (response.didCancel) {
+          Toast.show({
+            type: 'error',
+            text1: 'Upload Image Gagal',
+          });
+        } else if (response.assets && response.assets.length > 0) {
+          const formData = new FormData();
+          formData.append('file', {
+            name: response.assets[0].fileName,
+            type: response.assets[0].type,
+            uri: response.assets[0].uri,
+          });
+
+          const typeImage = response.assets[0].type;
+          setPhotoProfile(response.assets[0].uri || '');
+
+          if (typeImage == 'image/png' || typeImage == 'image/jpeg') {
+            await API.put('/profile/image', formData, {
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${await AsyncStorage.getItem('token')}`,
+              },
+            });
+            Toast.show({
+              type: 'success',
+              text1: 'Upload Image Berhasil',
+            });
+          } else {
+            Toast.show({
+              type: 'error',
+              text1: 'Upload Image Gagal',
+            });
+          }
+        }
+      },
+    );
   };
 
   const handleUpdateDataUser = async () => {
@@ -57,6 +108,8 @@ const Account = ({navigation}: any) => {
       });
     }
   };
+
+  console.log(dataUser.profile_image);
 
   return (
     <View style={styles.container}>
@@ -86,20 +139,39 @@ const Account = ({navigation}: any) => {
       </View>
 
       <View style={{marginTop: 40}}>
-        <TouchableOpacity style={{alignItems: 'center'}}>
-          <Image
-            source={{
-              uri: dataUser.profile_image,
-            }}
-            style={{
-              width: 100,
-              height: 100,
-              borderRadius: 50,
-              borderWidth: 1,
-              borderColor: 'black',
-            }}
-          />
-        </TouchableOpacity>
+        {editable ? (
+          <TouchableOpacity
+            style={{alignItems: 'center'}}
+            onPress={handleChangePhotoProfile}>
+            <Image
+              source={{
+                uri: photoProfile,
+              }}
+              style={{
+                width: 100,
+                height: 100,
+                borderRadius: 50,
+                borderWidth: 1,
+                borderColor: 'black',
+              }}
+            />
+          </TouchableOpacity>
+        ) : (
+          <View style={{alignItems: 'center'}}>
+            <Image
+              source={{
+                uri: photoProfile,
+              }}
+              style={{
+                width: 100,
+                height: 100,
+                borderRadius: 50,
+                borderWidth: 1,
+                borderColor: 'black',
+              }}
+            />
+          </View>
+        )}
         <Text
           style={{
             color: 'black',
