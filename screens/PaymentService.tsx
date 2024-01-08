@@ -77,7 +77,7 @@ const PaymentService = ({navigation, route}: any) => {
           <Toast />
           <View style={styles.header}>
             <TouchableOpacity
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.replace('HomeScreen')}
               style={{
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -87,7 +87,13 @@ const PaymentService = ({navigation, route}: any) => {
               <Text style={{color: 'black', fontSize: 15}}>Kembali</Text>
             </TouchableOpacity>
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
-              <Text style={{textAlign: 'center', color: 'black', fontSize: 20}}>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  color: 'black',
+                  fontSize: 20,
+                  marginLeft: 60,
+                }}>
                 Transaksi
               </Text>
             </View>

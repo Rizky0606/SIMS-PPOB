@@ -59,6 +59,7 @@ const TopUp = ({navigation}: any) => {
         text1: 'Topup Berhasil',
       });
       setIsLoadingButton(false);
+      navigation.replace('HomeScreen');
     } catch (error) {
       console.log(error);
       setIsLoading(false);
@@ -131,7 +132,6 @@ const TopUp = ({navigation}: any) => {
               placeholderTextColor="black"
               value={`Rp. ${Number(inputTopup)}`}
               onChangeText={e => setInputTopup(Number(e))}
-              //   onChange={e => setInputTopup(Number(e.nativeEvent.text))}
             />
           </View>
 

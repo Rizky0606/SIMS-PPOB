@@ -10,6 +10,7 @@ import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ActivityIndicator} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {API} from '../libs/api';
 import {formatCurrency} from '../utils/currencyFormatter';
@@ -32,6 +33,7 @@ const Home = ({navigation}: any) => {
   const [dataServices, setDataServices] = useState<TypeServicesProps[] | null>(
     [],
   );
+  const [isPrivate, setIsPrivate] = useState<boolean>(true);
   const [dataBanner, setDataBanner] = useState<TypeBannerProps[] | null>([]);
   const [saldo, setSaldo] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -169,17 +171,49 @@ const Home = ({navigation}: any) => {
           </View>
 
           <View style={{width: '100%'}}>
-            <View style={{alignItems: 'center'}}>
+            <View style={{alignItems: 'center', position: 'relative'}}>
               <Image
                 source={require('../assets/images/Background-Saldo.png')}
               />
             </View>
             <View style={{position: 'absolute', marginLeft: 45, marginTop: 20}}>
               <Text style={{color: 'white', fontSize: 18}}>Saldo anda</Text>
-              <Text style={{color: 'white', fontSize: 25, marginTop: 15}}>
-                {formatCurrency(saldo)}
-              </Text>
-              <Text style={{color: 'white', marginTop: 20}}>Lihat Saldo </Text>
+              {isPrivate ? (
+                <Text style={{color: 'white', fontSize: 25, marginTop: 15}}>
+                  Rp *******
+                </Text>
+              ) : (
+                <Text style={{color: 'white', fontSize: 25, marginTop: 15}}>
+                  {formatCurrency(saldo)}
+                </Text>
+              )}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: 20,
+                }}>
+                <Text style={{color: 'white', marginRight: 5}}>
+                  Lihat Saldo{' '}
+                </Text>
+                {isPrivate ? (
+                  <TouchableOpacity onPress={() => setIsPrivate(false)}>
+                    <MaterialCommunityIcons
+                      name="eye-outline"
+                      color="white"
+                      size={23}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity onPress={() => setIsPrivate(true)}>
+                    <MaterialCommunityIcons
+                      name="eye-off-outline"
+                      color="white"
+                      size={23}
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
           </View>
 

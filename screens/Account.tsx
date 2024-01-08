@@ -58,8 +58,6 @@ const Account = ({navigation}: any) => {
     }
   };
 
-  console.log(dataUser.profile_image);
-
   return (
     <View style={styles.container}>
       <Toast />
@@ -80,6 +78,7 @@ const Account = ({navigation}: any) => {
               textAlign: 'center',
               color: 'black',
               fontSize: 20,
+              marginLeft: 70,
             }}>
             Akun
           </Text>

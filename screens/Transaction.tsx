@@ -82,7 +82,13 @@ const Transaction = ({navigation}: any) => {
               <Text style={{color: 'black', fontSize: 15}}>Kembali</Text>
             </TouchableOpacity>
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
-              <Text style={{textAlign: 'center', color: 'black', fontSize: 20}}>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  color: 'black',
+                  fontSize: 20,
+                  marginLeft: 50,
+                }}>
                 Transaksi
               </Text>
             </View>
